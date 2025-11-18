@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS moods (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(20) NOT NULL,
     emoji VARCHAR(10) NOT NULL
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO moods (name, emoji) VALUES
     ('excellent', '😄'),
@@ -17,7 +17,12 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Ajout d’un utilisateur test
+INSERT INTO users (username, email, password) VALUES
+("test", "test@example.com", "$2b$10$1r5yQeHkFBB6P2nR8xDS2u6Ia8ys2DWMhRkYjqMOEMf7iU9QoPhnO");
+-- Mot de passe : test1234
 
 CREATE TABLE IF NOT EXISTS entries (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +35,7 @@ CREATE TABLE IF NOT EXISTS entries (
     FOREIGN KEY (mood_id) REFERENCES moods(id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     INDEX idx_date (date)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Exemple d’insertion dans entries
 INSERT INTO entries (date, mood_id, comment, user_id) VALUES
