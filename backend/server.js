@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 app.get("/api/moods", async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM mood_entries ORDER BY date DESC"
+      "SELECT * FROM entries ORDER BY date DESC"
     );
     res.json({
       total: rows.length,
@@ -74,7 +74,7 @@ app.get("/api/moods", async (req, res) => {
 app.get("/api/moods/:date", async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM mood_entries WHERE date = ?",
+      "SELECT * FROM entries WHERE date = ?",
       [req.params.date]
     );
 
@@ -103,27 +103,27 @@ app.post("/api/moods", async (req, res) => {
 
     // Vérifier si une entrée existe déjà pour cette date
     const [existing] = await pool.query(
-      "SELECT id FROM mood_entries WHERE date = ?",
+      "SELECT id FROM entries WHERE date = ?",
       [date]
     );
 
     if (existing.length > 0) {
       // Mise à jour
       await pool.query(
-        "UPDATE mood_entries SET mood = ?, mood_emoji = ?, note = ? WHERE date = ?",
+        "UPDATE entries SET mood = ?, mood_emoji = ?, note = ? WHERE date = ?",
         [mood, mood_emoji, note || null, date]
       );
     } else {
       // Création
       await pool.query(
-        "INSERT INTO mood_entries (date, mood, mood_emoji, note) VALUES (?, ?, ?, ?)",
+        "INSERT INTO entries (date, mood, mood_emoji, note) VALUES (?, ?, ?, ?)",
         [date, mood, mood_emoji, note || null]
       );
     }
 
     // Récupérer l'entrée créée/mise à jour
     const [result] = await pool.query(
-      "SELECT * FROM mood_entries WHERE date = ?",
+      "SELECT * FROM entries WHERE date = ?",
       [date]
     );
 
@@ -141,7 +141,7 @@ app.post("/api/moods", async (req, res) => {
 app.delete("/api/moods/:date", async (req, res) => {
   try {
     const [result] = await pool.query(
-      "DELETE FROM mood_entries WHERE date = ?",
+      "DELETE FROM entries WHERE date = ?",
       [req.params.date]
     );
 
@@ -161,17 +161,17 @@ app.get("/api/stats", async (req, res) => {
   try {
     // Total d'entrées
     const [countResult] = await pool.query(
-      "SELECT COUNT(*) as total FROM mood_entries"
+      "SELECT COUNT(*) as total FROM entries"
     );
 
     // Distribution des humeurs
     const [moodDistribution] = await pool.query(
-      "SELECT mood, mood_emoji, COUNT(*) as count FROM mood_entries GROUP BY mood, mood_emoji ORDER BY count DESC"
+      "SELECT mood, mood_emoji, COUNT(*) as count FROM entries GROUP BY mood, mood_emoji ORDER BY count DESC"
     );
 
     // Entrées récentes (7 derniers jours)
     const [recentEntries] = await pool.query(
-      "SELECT date, mood, mood_emoji FROM mood_entries WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) ORDER BY date DESC"
+      "SELECT date, mood, mood_emoji FROM entries WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) ORDER BY date DESC"
     );
 
     res.json({

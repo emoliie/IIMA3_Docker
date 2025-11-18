@@ -1,25 +1,44 @@
 USE moodtracker;
 
-CREATE TABLE IF NOT EXISTS mood_entries (
+CREATE TABLE IF NOT EXISTS moods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    emoji VARCHAR(10) NOT NULL
+);
+
+INSERT INTO moods (name, emoji) VALUES
+    ('excellent', '😄'),
+    ('good', '🙂'),
+    ('neutral', '😐'),
+    ('bad', '😔');
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS entries (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL UNIQUE,
-    mood VARCHAR(20) NOT NULL,
-    mood_emoji VARCHAR(10) NOT NULL,
-    note TEXT,
+    mood_id INT NOT NULL,
+    comment TEXT,
+    user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (mood_id) REFERENCES moods(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
     INDEX idx_date (date)
 );
 
-INSERT INTO mood_entries (date, mood, mood_emoji, note) VALUES
-    ('2025-10-01', 'excellent', '😄', 'Journée incroyable ! Tout s\'est bien passé au travail.'),
-    ('2025-10-02', 'good', '🙂', 'Bonne journée, productive et agréable.'),
-    ('2025-10-03', 'neutral', '😐', 'Journée normale, rien de spécial.'),
-    ('2025-10-04', 'bad', '😔', 'Journée difficile, beaucoup de stress.'),
-    ('2025-10-05', 'excellent', '😄', 'Week-end parfait avec la famille !'),
-    ('2025-10-06', 'good', '🙂', 'Dimanche relaxant, lecture et repos.'),
-    ('2025-10-07', 'good', '🙂', 'Bon début de semaine.');
+-- Exemple d’insertion dans entries
+INSERT INTO entries (date, mood_id, comment, user_id) VALUES
+    ('2025-10-01', 1, "Journée incroyable ! Tout s'est bien passé au travail.", 1),
+    ('2025-10-02', 2, "Bonne journée, productive et agréable.", 1),
+    ('2025-10-03', 3, "Journée normale, rien de spécial.", 1),
+    ('2025-10-04', 4, "Journée difficile, beaucoup de stress.", 1);
 
--- Afficher les données insérées
+-- Message pour vérifier que la base est initialisée
 SELECT 'Base de données Mood Tracker initialisée avec succès!' AS message;
-SELECT COUNT(*) AS total_entries FROM mood_entries;
+SELECT COUNT(*) AS total_entries FROM entries;
