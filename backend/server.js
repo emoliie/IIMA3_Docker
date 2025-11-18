@@ -57,9 +57,7 @@ app.get("/", (req, res) => {
 // Récupérer toutes les entrées d'humeur
 app.get("/api/moods", async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM entries ORDER BY date DESC"
-    );
+    const [rows] = await pool.query("SELECT * FROM entries ORDER BY date DESC");
     res.json({
       total: rows.length,
       entries: rows,
@@ -73,10 +71,9 @@ app.get("/api/moods", async (req, res) => {
 // Récupérer une entrée par date
 app.get("/api/moods/:date", async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM entries WHERE date = ?",
-      [req.params.date]
-    );
+    const [rows] = await pool.query("SELECT * FROM entries WHERE date = ?", [
+      req.params.date,
+    ]);
 
     if (rows.length === 0) {
       return res.status(404).json({ error: "Aucune entrée pour cette date" });
@@ -122,10 +119,9 @@ app.post("/api/moods", async (req, res) => {
     }
 
     // Récupérer l'entrée créée/mise à jour
-    const [result] = await pool.query(
-      "SELECT * FROM entries WHERE date = ?",
-      [date]
-    );
+    const [result] = await pool.query("SELECT * FROM entries WHERE date = ?", [
+      date,
+    ]);
 
     res.json({
       message: existing.length > 0 ? "Entrée mise à jour" : "Entrée créée",
@@ -140,10 +136,9 @@ app.post("/api/moods", async (req, res) => {
 // Supprimer une entrée
 app.delete("/api/moods/:date", async (req, res) => {
   try {
-    const [result] = await pool.query(
-      "DELETE FROM entries WHERE date = ?",
-      [req.params.date]
-    );
+    const [result] = await pool.query("DELETE FROM entries WHERE date = ?", [
+      req.params.date,
+    ]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Entrée non trouvée" });
