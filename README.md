@@ -85,7 +85,7 @@ CREATE TABLE entries (
 
 1. **Cloner le repository**
 ```bash
-git clone <votre-repo>
+git clone https://github.com/emoliie/IIMA3_Docker.git
 cd mood-tracker
 ```
 
