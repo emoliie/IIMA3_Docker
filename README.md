@@ -94,24 +94,26 @@ cd mood-tracker
 cp .env.example .env
 ```
 
-Contenu du `.env` :
+Puis **éditez le fichier `.env`** et remplacez les valeurs par vos propres mots de passe sécurisés :
 ```env
 # MySQL Database Configuration
-MYSQL_ROOT_PASSWORD=rootpassword
+MYSQL_ROOT_PASSWORD=your_secure_root_password
 MYSQL_DATABASE=moodtracker
 MYSQL_USER=mooduser
-MYSQL_PASSWORD=moodpass123
+MYSQL_PASSWORD=your_secure_password
 
 # Backend Database Connection
 DB_HOST=mysql
 DB_USER=mooduser
-DB_PASSWORD=moodpass123
+DB_PASSWORD=your_secure_password
 DB_NAME=moodtracker
 DB_PORT=3306
 
 # Frontend API Configuration
 VITE_API_URL=http://localhost:5002
 ```
+
+⚠️ **Important** : Remplacez `your_secure_root_password` et `your_secure_password` par des mots de passe forts de votre choix.
 
 3. **Lancer l'application**
 ```bash
@@ -122,12 +124,11 @@ docker-compose up -d
 - **Frontend** : http://localhost:3001
 - **Backend API** : http://localhost:5002
 
-### Utilisateur de test
+### Données initiales
 
-Un utilisateur de test est automatiquement créé :
-- **Username** : `test`
-- **Email** : `test@example.com`
-- **Password** : `test1234`
+L'application est initialisée avec :
+- 4 moods par défaut (Excellent, Bien, Neutre, Mauvais)
+- Un utilisateur de test (credentials définis dans [init.sql](init.sql))
 
 ## 📡 API Endpoints
 
@@ -237,8 +238,9 @@ docker logs mood_mysql -f
 
 **Accéder à MySQL :**
 ```bash
-docker exec -it mood_mysql mysql -umooduser -pmoodpass123 moodtracker
+docker exec -it mood_mysql mysql -u mooduser -p moodtracker
 ```
+Vous serez invité à saisir le mot de passe défini dans votre fichier `.env`.
 
 **Tester l'API :**
 ```bash
