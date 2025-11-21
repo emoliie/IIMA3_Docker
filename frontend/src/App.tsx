@@ -1,34 +1,59 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import DailyMoodEntry from './components/DailyMoodEntry'
+import HistoryView from './components/HistoryView'
+import Statistics from './components/Statistics'
+
+type View = 'entry' | 'history' | 'stats'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentView, setCurrentView] = useState<View>('entry')
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  const handleMoodSubmitted = () => {
+    setRefreshTrigger(prev => prev + 1)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="app-container">
+      <header className="app-header">
+        <h1>😊 Mood Tracker</h1>
+        <p>Suivez votre humeur au quotidien</p>
+      </header>
+
+      <nav className="navigation">
+        <button 
+          className={`nav-btn ${currentView === 'entry' ? 'active' : ''}`}
+          onClick={() => setCurrentView('entry')}
+        >
+          📝 Aujourd'hui
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+        <button 
+          className={`nav-btn ${currentView === 'history' ? 'active' : ''}`}
+          onClick={() => setCurrentView('history')}
+        >
+          📋 Historique
+        </button>
+        <button 
+          className={`nav-btn ${currentView === 'stats' ? 'active' : ''}`}
+          onClick={() => setCurrentView('stats')}
+        >
+          📊 Statistiques
+        </button>
+      </nav>
+
+      <main className="content">
+        {currentView === 'entry' && (
+          <DailyMoodEntry onMoodSubmitted={handleMoodSubmitted} />
+        )}
+        {currentView === 'history' && (
+          <HistoryView refreshTrigger={refreshTrigger} />
+        )}
+        {currentView === 'stats' && (
+          <Statistics refreshTrigger={refreshTrigger} />
+        )}
+      </main>
+    </div>
   )
 }
 
