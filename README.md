@@ -1,296 +1,307 @@
-# 😊 Mood Tracker - Application Complète
+# 😊 Mood Tracker
 
-> Une application web moderne pour suivre votre humeur quotidienne avec style !
+Une application web moderne pour suivre votre humeur au quotidien. Construite avec React, TypeScript, Node.js, Express et MySQL, entièrement dockerisée.
 
-## 🎯 À Propos
+![Mood Tracker](https://img.shields.io/badge/version-3.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-**Mood Tracker** est une application full-stack complète permettant de :
-- 📝 **Enregistrer** votre humeur chaque jour
-- 📋 **Consulter** l'historique de vos entrées
-- 📊 **Analyser** vos patterns d'humeur avec des graphiques
+## 📸 Captures d'écran
+
+### Interface principale
+- **Aujourd'hui** : Enregistrez votre humeur du jour avec une note optionnelle
+- **Historique** : Consultez toutes vos entrées passées
+- **Statistiques** : Visualisez la distribution de vos humeurs et les 7 derniers jours
 
 ## ✨ Fonctionnalités
 
-### 📝 Saisie Quotidienne
-- 4 niveaux d'humeur avec emojis : 😄 🙂 😐 😔
-- Champ de note optionnel pour détailler votre journée
-- Synchronisation automatique avec la base de données
-
-### 📋 Historique Complet
-- Vue de toutes vos entrées passées
-- Suppression facile d'entrées
-- Dates formatées en français
-- Affichage des notes
-
-### 📊 Statistiques Visuelles
-- Total d'entrées enregistrées
-- Distribution des humeurs en pourcentage
-- Graphiques en barres colorées
-- Vue des 7 derniers jours
-
-### 🎨 Design Moderne
-- Interface intuitive et attrayante
-- Dégradé violet/pourpre (#667eea → #764ba2)
-- Design responsive (mobile, tablet, desktop)
-- Animations fluides et transitions
-
-## 🚀 Démarrage Rapide
-
-### Option 1: Mode Développement
-```bash
-# Terminal 1 - Backend
-cd backend && npm install && npm run dev
-
-# Terminal 2 - Frontend
-cd frontend && npm install && npm run dev
-
-# Ouvrir http://localhost:5173
-```
-
-### Option 2: Docker Compose (Recommandé)
-```bash
-docker-compose up
-# Frontend: http://localhost:3000
-```
-
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| **[QUICK_START.md](./QUICK_START.md)** | Démarrage en 5 minutes ⚡ |
-| **[SETUP.md](./SETUP.md)** | Configuration complète 🏗️ |
-| **[FRONTEND_SUMMARY.md](./FRONTEND_SUMMARY.md)** | Résumé du frontend 📋 |
-| **[frontend/FRONTEND_README.md](./frontend/FRONTEND_README.md)** | Guide du frontend 📖 |
-| **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** | Système de design 🎨 |
-| **[API_EXAMPLES.md](./API_EXAMPLES.md)** | Exemples API 🔌 |
-| **[UI_DEMO.md](./UI_DEMO.md)** | Démonstration UI 📱 |
-| **[README_DOCUMENTATION.md](./README_DOCUMENTATION.md)** | Index documentation 📚 |
-
-**→ [Voir l'index complet de la documentation](./README_DOCUMENTATION.md)**
+- ✅ Enregistrement quotidien de l'humeur (4 moods : Excellent 😄, Bien 🙂, Neutre 😐, Mauvais 😔)
+- ✅ Ajout de notes personnelles pour chaque entrée
+- ✅ Historique complet de toutes les entrées
+- ✅ Statistiques avec distribution des humeurs
+- ✅ Visualisation des 7 derniers jours
+- ✅ Interface moderne et responsive (Tailwind CSS)
+- ✅ Encodage UTF-8 complet (emojis + accents)
+- ✅ Base de données MySQL avec clés étrangères
+- ✅ API REST complète
+- ✅ Dockerisation complète (frontend + backend + MySQL)
 
 ## 🏗️ Architecture
 
+### Stack technique
+
+**Frontend :**
+- React 19.2
+- TypeScript
+- Tailwind CSS
+- Vite
+
+**Backend :**
+- Node.js 18
+- Express
+- MySQL2
+
+**Base de données :**
+- MySQL 8.0
+- Encodage UTF-8 (utf8mb4)
+
+### Structure de la base de données
+
+```sql
+-- Table des moods disponibles
+CREATE TABLE moods (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL,
+    emoji VARCHAR(10) NOT NULL
+);
+
+-- Table des utilisateurs
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Table des entrées
+CREATE TABLE entries (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    date DATE NOT NULL UNIQUE,
+    mood_id INT NOT NULL,
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (mood_id) REFERENCES moods(id)
+);
 ```
-Frontend (React 19 + TypeScript)
-├── App.tsx (Navigation)
-├── DailyMoodEntry.tsx (Saisie)
-├── HistoryView.tsx (Historique)
-└── Statistics.tsx (Statistiques)
-         ↓
-Backend (Node.js + Express)
-├── GET/POST /api/moods
-├── DELETE /api/moods/:date
-└── GET /api/stats
-         ↓
-Database (MySQL)
-└── entries, moods, users
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- Docker
+- Docker Compose
+
+### Installation
+
+1. **Cloner le repository**
+```bash
+git clone <votre-repo>
+cd mood-tracker
 ```
 
-## 🛠️ Stack Technologique
+2. **Créer le fichier `.env`**
+```bash
+cp .env.example .env
+```
 
-### Frontend
-- **React** 19.2.0 - Framework UI
-- **TypeScript** 5.9.3 - Typage statique
-- **Vite** 7.2.2 - Build tool moderne
-- **CSS3** - Styling responsive
+Contenu du `.env` :
+```env
+# MySQL Database Configuration
+MYSQL_ROOT_PASSWORD=rootpassword
+MYSQL_DATABASE=moodtracker
+MYSQL_USER=mooduser
+MYSQL_PASSWORD=moodpass123
 
-### Backend
-- **Node.js** - Runtime
-- **Express.js** - Framework web
-- **MySQL** 8.0 - Base de données
-- **CORS** - Requêtes cross-origin
+# Backend Database Connection
+DB_HOST=mysql
+DB_USER=mooduser
+DB_PASSWORD=moodpass123
+DB_NAME=moodtracker
+DB_PORT=3306
 
-### DevOps
-- **Docker** - Containerisation
-- **Docker Compose** - Orchestration
-- **Nginx** - Proxy reverse (production)
+# Frontend API Configuration
+VITE_API_URL=http://localhost:5002
+```
 
-## 📁 Structure du Projet
+3. **Lancer l'application**
+```bash
+docker-compose up -d
+```
+
+4. **Accéder à l'application**
+- **Frontend** : http://localhost:3001
+- **Backend API** : http://localhost:5002
+
+### Utilisateur de test
+
+Un utilisateur de test est automatiquement créé :
+- **Username** : `test`
+- **Email** : `test@example.com`
+- **Password** : `test1234`
+
+## 📡 API Endpoints
+
+### Moods
+- `GET /api/moods` - Liste tous les moods disponibles
+- `GET /api/moods/:name` - Récupère un mood par nom
+
+### Entries
+- `GET /api/entries` - Liste toutes les entrées
+- `GET /api/entries/:date` - Récupère une entrée par date (YYYY-MM-DD)
+- `GET /api/entries/month/:year/:month` - Entrées d'un mois
+- `POST /api/entries` - Créer/mettre à jour une entrée
+- `DELETE /api/entries/:date` - Supprimer une entrée
+
+### Statistiques
+- `GET /api/stats` - Statistiques globales
+- `GET /api/stats/:year/:month` - Statistiques d'un mois
+
+### Health Check
+- `GET /api/health` - Vérifier l'état du service
+
+### Exemple de requête
+
+**Créer une entrée :**
+```bash
+curl -X POST http://localhost:5002/api/entries \
+  -H "Content-Type: application/json" \
+  -d '{
+    "date": "2025-11-21",
+    "mood_id": 1,
+    "note": "Super journée !"
+  }'
+```
+
+**Réponse :**
+```json
+{
+  "message": "Entrée créée",
+  "entry": {
+    "id": 5,
+    "date": "2025-11-21",
+    "mood_id": 1,
+    "mood": "Excellent",
+    "mood_emoji": "😄",
+    "note": "Super journée !",
+    "created_at": "2025-11-21 12:00:00",
+    "updated_at": "2025-11-21 12:00:00"
+  }
+}
+```
+
+## 🛠️ Développement
+
+### Structure du projet
 
 ```
-IIMA3_Docker/
+mood-tracker/
 ├── backend/
-│   ├── Dockerfile
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── database.js
+│   │   ├── controllers/
+│   │   │   ├── entryController.js
+│   │   │   └── moodTypeController.js
+│   │   ├── routes/
+│   │   │   ├── entryRoutes.js
+│   │   │   └── moodTypeRoutes.js
+│   │   └── app.js
+│   ├── server.js
 │   ├── package.json
-│   └── server.js (API REST)
+│   └── Dockerfile
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   ├── styles/
-│   │   └── App.tsx
-│   ├── Dockerfile
-│   └── package.json
-├── init.sql (Initialisation BD)
-├── docker-compose.yml (Orchestration)
-└── documentation/ (Guides)
+│   │   │   ├── DailyMoodEntry.tsx
+│   │   │   ├── HistoryView.tsx
+│   │   │   └── Statistics.tsx
+│   │   ├── config/
+│   │   │   └── api.ts
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── index.css
+│   ├── tailwind.config.js
+│   ├── package.json
+│   └── Dockerfile
+├── init.sql
+├── docker-compose.yml
+├── .env
+└── README.md
 ```
 
-## 🔌 API Endpoints
+### Commandes utiles
 
-```
-GET    /api/moods              → Récupérer toutes les entrées
-GET    /api/moods/:date        → Entrée d'une date spécifique
-POST   /api/moods              → Créer/Mettre à jour une entrée
-DELETE /api/moods/:date        → Supprimer une entrée
-GET    /api/stats              → Statistiques
-GET    /api/health             → Vérifier la connexion
-```
-
-## 🎨 Design System
-
-### Couleurs Principales
-- **Primaire** : #667eea (Violet)
-- **Accent** : #764ba2 (Pourpre)
-- **Texte** : #333333 (Noir)
-- **Fond** : #ffffff (Blanc)
-
-### Typage
-- **Police** : Segoe UI, sans-serif
-- **Titres** : 2.5rem, 700 weight
-- **Corps** : 1rem, 400 weight
-
-## 📱 Responsivité
-
-- ✅ Mobile (< 480px) - 2 colonnes
-- ✅ Tablet (480px - 768px) - Layout adapté
-- ✅ Desktop (> 768px) - Layout complet
-
-## ⚙️ Configuration
-
-### Variables d'Environnement
-
-**Frontend (.env)**
-```env
-VITE_API_URL=http://localhost:5000
-```
-
-**Backend**
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=password
-DB_NAME=moodtracker
-DB_PORT=3306
-```
-
-## 🧪 Test de l'Application
-
-### Étapes
-1. Lancer l'application (voir Démarrage Rapide)
-2. Enregistrer une humeur (📝)
-3. Vérifier dans l'historique (📋)
-4. Consulter les statistiques (📊)
-5. Tester sur mobile (F12)
-
-### Test API
+**Rebuild complet :**
 ```bash
-# Récupérer toutes les entrées
-curl http://localhost:5000/api/moods
-
-# Créer une entrée
-curl -X POST http://localhost:5000/api/moods \
-  -H "Content-Type: application/json" \
-  -d '{"date":"2025-11-20","mood":"excellent","mood_emoji":"😄","note":"Superbe!"}'
+docker-compose down -v
+docker-compose up -d --build
 ```
 
-## 🐛 Troubleshooting
+**Voir les logs :**
+```bash
+docker-compose logs -f
+docker logs mood_backend -f
+docker logs mood_frontend -f
+docker logs mood_mysql -f
+```
 
-### "Cannot connect to API"
-1. Vérifier que le backend tourne : `curl http://localhost:5000/api/health`
-2. Vérifier `VITE_API_URL` dans `.env`
+**Accéder à MySQL :**
+```bash
+docker exec -it mood_mysql mysql -umooduser -pmoodpass123 moodtracker
+```
 
-### "Database connection error"
-1. Vérifier MySQL : `docker-compose ps`
-2. Vérifier les credentials
+**Tester l'API :**
+```bash
+./test-api-new.sh
+```
 
-### "Port déjà utilisé"
-1. Changer de port : `npm run dev -- --port 3001`
-2. Ou tuer le processus
+## 🎨 Personnalisation
 
-[Voir plus de solutions →](./QUICK_START.md#dépannage-rapide)
+### Ajouter de nouveaux moods
 
-## 📈 Améliorations Futures
+1. Modifier `init.sql` :
+```sql
+INSERT INTO moods (name, emoji) VALUES
+    ('Votre mood', '🎭');
+```
 
-### Phase 2
-- [ ] Authentification utilisateur
-- [ ] Dark mode
-- [ ] Filtres avancés
-- [ ] Export données (CSV)
+2. Rebuild :
+```bash
+docker-compose down -v && docker-compose up -d
+```
 
-### Phase 3
-- [ ] Progressive Web App (PWA)
-- [ ] Offline mode
-- [ ] WebSocket temps réel
-- [ ] Photos/images
-- [ ] Notifications
+### Modifier les couleurs Tailwind
 
-## 🤝 Contribution
+Éditer `frontend/tailwind.config.js` :
+```js
+theme: {
+  extend: {
+    colors: {
+      primary: {
+        500: '#your-color',
+        // ...
+      },
+    },
+  },
+}
+```
 
-Les contributions sont bienvenues ! Pour proposer des améliorations :
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
+## 🔧 Dépannage
 
-## 📝 Licence
+### Problème d'encodage UTF-8
 
-Ce projet est sous licence MIT. Voir [LICENSE](./LICENSE) pour détails.
+Si les emojis ne s'affichent pas correctement :
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+### Le frontend ne se connecte pas au backend
+
+Vérifier que `VITE_API_URL` dans `.env` pointe vers `http://localhost:5002`.
+
+### Base de données vide après rebuild
+
+C'est normal ! `init.sql` ne s'exécute que lors de la **première** création du volume. Utilisez `docker-compose down -v` pour supprimer les volumes.
+
+## 📝 License
+
+MIT
+
+## 🤝 Contributions
+
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
 
 ## 👨‍💻 Auteur
 
-- **Frontend** : React TypeScript modern interface
-- **Backend** : Node.js Express REST API
-- **Database** : MySQL relational database
-- **DevOps** : Docker & Docker Compose
-
-## 🙏 Remerciements
-
-- React team pour cet excellent framework
-- Vite team pour le build tool rapide
-- Express.js community
-- Docker pour la containerization
-
-## 📞 Support
-
-Pour obtenir de l'aide :
-1. Consulter la [documentation complète](./README_DOCUMENTATION.md)
-2. Vérifier le [guide de configuration](./SETUP.md)
-3. Voir les [exemples API](./API_EXAMPLES.md)
-4. Ouvrir une issue sur GitHub
-
-## 🎯 Prochaines Étapes
-
-1. ✅ Lancer l'application ([QUICK_START.md](./QUICK_START.md))
-2. ✅ Tester les fonctionnalités
-3. ✅ Consulter la documentation
-4. ✅ Personnaliser (design, features)
-5. ✅ Déployer en production
-
-## 📊 Statistiques du Projet
-
-- **Frontend** : 3 composants React
-- **Styles** : 4 fichiers CSS responsifs
-- **Documentation** : 8 fichiers guides
-- **Code** : 403 lignes React, 627 lignes CSS
-- **Configuration** : Docker Compose + Env
-
-## 🌟 Points Forts
-
-✨ Architecture **moderne et scalable**
-✨ Design **élégant et responsive**
-✨ Documentation **exhaustive et claire**
-✨ Code **clean, typé et maintenable**
-✨ Déploiement **facile avec Docker**
-✨ API **RESTful et sécurisée**
-✨ Performance **optimisée avec Vite**
-
----
-
-## 🚀 Bon développement !
-
-Commencez avec [QUICK_START.md](./QUICK_START.md) et profitez de votre Mood Tracker !
-
-**Questions ?** → Consultez [README_DOCUMENTATION.md](./README_DOCUMENTATION.md)
-
-😊 **Happy coding!**
+Créé par Yohan Seneret, Mila Paounov et Emilie Xu.

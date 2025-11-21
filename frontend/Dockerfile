@@ -1,3 +1,16 @@
+# Stage de développement avec hot reload
+FROM node:20-alpine as development
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+# Stage de production
 FROM node:20-alpine as builder
 
 WORKDIR /app
@@ -7,9 +20,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build 
+RUN npm run build
 
-FROM node:20-alpine
+FROM node:20-alpine as production
 
 RUN npm install -g serve
 
